@@ -1,3 +1,4 @@
+[bot.html](https://github.com/user-attachments/files/22033622/bot.html)
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -86,17 +87,17 @@
         .catalog-btn, .gender-btn {
             border: 2px solid black;
         }
-        /* Стиль для кнопки "Купить" */
+        /* Стиль для кнопки "Купить" в полноэкранном режиме */
         #buy-btn {
-            background-color: var(--tg-theme-button-color, #2481cc);
-            color: var(--tg-theme-button-text-color, #ffffff);
-            border: none;
+            background-color: white;
+            color: black;
+            border: 2px solid black;
         }
-        /* Стиль для кнопки "Вернуться в каталог" */
+        /* Стиль для кнопки "Вернуться в каталог" в полноэкранном режиме */
         #details-close-btn {
-            background-color: var(--tg-theme-button-color, #2481cc);
-            color: var(--tg-theme-button-text-color, #ffffff);
-            border: none;
+            background-color: white;
+            color: black;
+            border: 2px solid black;
         }
         /* Стиль для кнопок-фильтров */
         .catalog-btn, .gender-btn {
@@ -294,7 +295,7 @@
                     </div>
                     <div class="flex items-center justify-between mt-4">
                         <p id="details-price" class="text-3xl font-extrabold text-black"></p>
-                        <button id="buy-btn" class="bg-white text-black font-semibold py-3 px-8 rounded-btn transition duration-300 transform hover:scale-105">Купить</button>
+                        <button id="buy-btn" class="bg-black text-white font-semibold py-3 px-8 rounded-btn transition duration-300 transform hover:scale-105">Купить</button>
                     </div>
                 </div>
             </div>
@@ -703,9 +704,17 @@
             // Выводим данные в консоль (имитация отправки админу)
             console.log("Заказ успешно оплачен! Детали:");
             console.log(currentOrderData);
-            
-            // Можно отправить эти данные в Telegram Bot API
-            // Пример: Telegram.WebApp.sendData(JSON.stringify(currentOrderData));
+
+            // Отправляем данные в Telegram Web App
+            if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
+                const dataToSend = {
+                    action: 'order_completed',
+                    payload: currentOrderData
+                };
+                Telegram.WebApp.sendData(JSON.stringify(dataToSend));
+            } else {
+                console.warn("Telegram.WebApp is not available. Data will not be sent to the bot.");
+            }
 
             // Скрываем окно оплаты
             paymentModal.classList.add('hidden');
