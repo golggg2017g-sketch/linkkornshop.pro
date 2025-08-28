@@ -158,7 +158,12 @@
 
         <!-- Форма для добавления товара (только для админа) -->
         <div id="admin-panel" class="hidden mb-6 p-4 border-2 border-black rounded-box bg-white">
-            <h2 class="text-xl font-semibold mb-4 text-black">Добавить новый товар</h2>
+            <div class="flex justify-between items-center mb-4 border-b border-black pb-2">
+                <h2 class="text-xl font-semibold text-black">Добавить новый товар</h2>
+                <button id="admin-logout-btn" class="bg-white text-black font-semibold py-1 px-3 rounded-btn text-sm transition duration-300 transform hover:scale-105">
+                    Выйти
+                </button>
+            </div>
             <form id="add-product-form" class="space-y-4">
                 <div>
                     <label for="product-gender" class="block text-sm font-medium text-black">Пол</label>
@@ -374,14 +379,18 @@
         // Имитация базы данных
         const productsDB = JSON.parse(localStorage.getItem('products')) || [];
 
-        // Пароль администратора (можно изменить)
-        const ADMIN_PASSWORD = "admin";
+        // Пароль администратора (изменен на 8920)
+        const ADMIN_PASSWORD = "8920";
+
+        // Переменная для отслеживания режима админа
+        let isAdminMode = false;
 
         // DOM элементы
         const mainContent = document.getElementById('main-content');
         const productList = document.getElementById('product-list');
         const emptyMessage = document.getElementById('empty-message');
         const adminLoginBtn = document.getElementById('admin-login-btn');
+        const adminLogoutBtn = document.getElementById('admin-logout-btn'); // Кнопка выхода из админки
         const passwordModal = document.getElementById('password-modal');
         const passwordInput = document.getElementById('password-input');
         const passwordSubmitBtn = document.getElementById('password-submit-btn');
@@ -426,6 +435,10 @@
             orderFormModal.classList.add('hidden');
             paymentModal.classList.add('hidden');
             modalMessage.classList.add('hidden');
+            // Убеждаемся, что админ-панель скрыта при инициализации
+            if (!isAdminMode) {
+                 adminPanel.classList.add('hidden');
+            }
         }
 
         // Функция для отображения каталога
@@ -491,7 +504,22 @@
                     <span class="product-price text-xl md:text-2xl font-extrabold">${product.price} ₽</span>
                 </div>
             `;
-            card.addEventListener('click', () => showProductDetails(product));
+            // Добавляем кнопку "Удалить", если пользователь - админ
+            if (isAdminMode) {
+                const deleteBtn = document.createElement('button');
+                deleteBtn.textContent = 'Удалить';
+                deleteBtn.className = 'bg-red-500 text-white font-semibold py-1 px-3 rounded-btn text-xs transition duration-300 transform hover:scale-105 mt-2';
+                deleteBtn.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Останавливаем всплытие, чтобы не срабатывал клик по карточке
+                    deleteProduct(product.id);
+                });
+                card.querySelector('.w-full.flex').appendChild(deleteBtn);
+                // Отключаем возможность перехода к деталям товара в режиме админа
+                card.removeEventListener('click', () => showProductDetails(product));
+            } else {
+                card.addEventListener('click', () => showProductDetails(product));
+            }
+
             return card;
         }
 
@@ -528,6 +556,17 @@
             }
 
             detailsView.classList.remove('hidden');
+        }
+        
+        // Функция для удаления товара
+        function deleteProduct(id) {
+            const productIndex = productsDB.findIndex(product => product.id === id);
+            if (productIndex !== -1) {
+                productsDB.splice(productIndex, 1);
+                saveProducts();
+                filterProducts();
+                showMessageModal('Товар успешно удален!');
+            }
         }
 
         // Функция для очистки формы добавления товара
@@ -588,21 +627,46 @@
 
         // ----------------- Инициализация и обработка событий -----------------
 
-        // При загрузке страницы, убеждаемся, что все модальные окна скрыты
-        // Это решает проблему с открытием не той страницы
-        window.onload = function() {
-            hideAllModals();
-            filterProducts(); // Отображаем товары при загрузке
-        };
+        // Функция инициализации приложения
+        function initializeApp() {
+            hideAllModals(); // Скрываем все модальные окна
+            filterProducts(); // Отображаем товары
+        }
 
+        // Используем Telegram.WebApp.ready() для надежной инициализации
+        // Если объект Telegram.WebApp существует, используем его
+        if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
+            Telegram.WebApp.ready();
+            Telegram.WebApp.onEvent('mainButtonClicked', () => {
+                // Обработка клика по основной кнопке, если нужно
+            });
+            // Вызываем инициализацию, когда Telegram Web App готов
+            initializeApp();
+        } else {
+            // Запасной вариант для обычной веб-страницы (не в Telegram)
+            document.addEventListener('DOMContentLoaded', initializeApp);
+        }
+        
+        // Обработчики событий
         adminLoginBtn.addEventListener('click', () => {
             passwordModal.classList.remove('hidden');
         });
 
+        adminLogoutBtn.addEventListener('click', () => {
+            isAdminMode = false;
+            adminPanel.classList.add('hidden');
+            adminLoginBtn.classList.remove('hidden'); // Показываем кнопку входа
+            filterProducts(); // Обновляем список, чтобы скрыть кнопки "Удалить"
+            showMessageModal('Вы вышли из режима администратора.');
+        });
+
         passwordSubmitBtn.addEventListener('click', () => {
             if (passwordInput.value === ADMIN_PASSWORD) {
+                isAdminMode = true;
                 passwordModal.classList.add('hidden');
                 adminPanel.classList.remove('hidden');
+                adminLoginBtn.classList.add('hidden'); // Скрываем кнопку входа
+                filterProducts(); // Обновляем список, чтобы показать кнопки "Удалить"
                 showMessageModal('Добро пожаловать, администратор!');
             } else {
                 passwordError.classList.remove('hidden');
