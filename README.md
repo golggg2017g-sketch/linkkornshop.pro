@@ -88,15 +88,17 @@
         }
         /* Стиль для кнопки "Купить" */
         #buy-btn {
-            background-color: var(--tg-theme-button-color, #2481cc);
-            color: var(--tg-theme-button-text-color, #ffffff);
-            border: none;
+            background-color: white;
+            color: black;
+            border: 2px solid black;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         /* Стиль для кнопки "Вернуться в каталог" */
         #details-close-btn {
-            background-color: var(--tg-theme-button-color, #2481cc);
-            color: var(--tg-theme-button-text-color, #ffffff);
-            border: none;
+            background-color: white;
+            color: black;
+            border: 2px solid black;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         /* Стиль для кнопок-фильтров */
         .catalog-btn, .gender-btn {
@@ -561,7 +563,7 @@
         }
 
         function showOrderForm() {
-            if (!selectedSize && sizeSelectionContainer.classList.contains('hidden') === false) {
+            if (currentProductData.sizes && currentProductData.sizes.length > 0 && !selectedSize) {
                 showMessage('Пожалуйста, выберите размер!');
                 return;
             }
