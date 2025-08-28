@@ -1,4 +1,3 @@
-[bot.html](https://github.com/user-attachments/files/22033622/bot.html)
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -272,7 +271,7 @@
             <button id="modal-close-btn" class="bg-white text-black font-semibold py-2 px-6 rounded-btn transition duration-300">OK</button>
         </div>
     </div>
-    
+
     <!-- Полноэкранное представление товара -->
     <div id="details-view" class="hidden full-screen-details">
         <div class="bg-white rounded-box p-6 w-full max-w-4xl max-h-[90%] overflow-y-auto">
@@ -304,7 +303,6 @@
             </div>
         </div>
     </div>
-
     <!-- Модальное окно для анкеты клиента -->
     <div id="order-form-modal" class="modal hidden">
         <div class="bg-white p-6 rounded-box shadow-2xl border-2 border-black max-w-lg w-full relative">
@@ -316,7 +314,7 @@
                     <input type="text" id="order-name" required class="mt-1 block w-full px-3 py-2 input-field rounded-md focus:ring-black focus:border-black">
                 </div>
                 <div>
-                    <label for="order-address" class="block text-sm font-medium text-black">Адрес доставки</label>
+                    <label for="order-address" class="block text-sm font-medium text-black">Адрес</label>
                     <input type="text" id="order-address" required class="mt-1 block w-full px-3 py-2 input-field rounded-md focus:ring-black focus:border-black">
                 </div>
                 <div>
@@ -327,425 +325,285 @@
                     <label for="order-phone" class="block text-sm font-medium text-black">Номер телефона</label>
                     <input type="tel" id="order-phone" required class="mt-1 block w-full px-3 py-2 input-field rounded-md focus:ring-black focus:border-black">
                 </div>
-                <button type="submit" class="w-full bg-white text-black font-semibold py-2 px-4 rounded-btn transition duration-300 transform hover:scale-105">
-                    Готово
+                <button type="submit" id="submit-order-btn" class="w-full bg-white text-black font-semibold py-2 px-4 rounded-btn transition duration-300 transform hover:scale-105">
+                    Перейти к оплате
+                </button>
+                <p id="form-error" class="text-red-500 text-sm mt-2 hidden">Заполните все поля!</p>
+                <button type="button" id="order-form-close-btn" class="mt-2 w-full bg-white text-black font-semibold py-2 px-4 rounded-btn transition duration-300 transform hover:scale-105">
+                    Отмена
                 </button>
             </form>
-            <button id="order-form-close-btn" class="absolute top-2 right-2 text-black hover:text-gray-400 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-            </button>
         </div>
     </div>
 
     <!-- Модальное окно для оплаты -->
     <div id="payment-modal" class="modal hidden">
-        <div class="bg-white p-6 rounded-box shadow-2xl border-2 border-black max-w-md w-full relative text-center">
-            <h3 class="text-xl font-semibold mb-4 text-black">Реквизиты для оплаты</h3>
-            <p class="text-sm font-medium text-gray-700">Номер карты:</p>
-            <p id="card-number" class="text-lg font-bold text-black mb-4 select-all">22023940450239032</p>
-            <p class="text-sm font-medium text-gray-700">Сумма к оплате:</p>
-            <p id="payment-amount" class="text-2xl font-extrabold text-black mb-4"></p>
-            <p id="payment-size" class="text-sm font-medium text-gray-700 mb-6"></p>
-            <button id="payment-completed-btn" class="w-full bg-white text-black font-semibold py-2 px-4 rounded-btn transition duration-300 transform hover:scale-105">
+        <div class="bg-white p-6 rounded-box shadow-2xl border-2 border-black max-w-lg w-full relative">
+            <h3 class="text-xl font-semibold mb-4 text-black text-center">Оплата заказа</h3>
+            <p class="text-sm text-gray-600 text-center mb-4">Для оплаты переведите средства на указанную карту, затем нажмите "Я оплатил".</p>
+            
+            <div class="bg-gray-100 p-4 rounded-box border-2 border-black mb-4">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="font-semibold text-black">Номер карты:</span>
+                    <span id="card-number" class="text-black">1234 5678 9012 3456</span>
+                    <button id="copy-card-btn" class="bg-white text-black py-1 px-3 rounded-btn text-xs hover:bg-gray-200 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8 5H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-2M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6 4h.01" />
+                        </svg>
+                        Копировать
+                    </button>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="font-semibold text-black">Сумма к оплате:</span>
+                    <span id="payment-price" class="font-bold text-black"></span>
+                </div>
+            </div>
+
+            <button id="payment-confirm-btn" class="w-full bg-black text-white font-semibold py-3 px-6 rounded-btn transition duration-300 transform hover:scale-105">
                 Я оплатил
             </button>
-            <button id="payment-close-btn" class="absolute top-2 right-2 text-black hover:text-gray-400 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
+            <button id="payment-close-btn" class="mt-2 w-full bg-white text-black font-semibold py-2 px-4 rounded-btn transition duration-300 transform hover:scale-105">
+                Отмена
             </button>
+            <p id="payment-error" class="text-red-500 text-sm mt-2 hidden text-center">Не удалось отправить данные заказа. Пожалуйста, попробуйте еще раз.</p>
         </div>
     </div>
 
+
     <script>
-        // Инициализация элементов DOM
-        const adminLoginBtn = document.getElementById('admin-login-btn');
-        const adminPanel = document.getElementById('admin-panel');
-        const addProductForm = document.getElementById('add-product-form');
+        // Имитация базы данных
+        const productsDB = JSON.parse(localStorage.getItem('products')) || [];
+
+        // Пароль администратора (можно изменить)
+        const ADMIN_PASSWORD = "admin";
+
+        // DOM элементы
+        const mainContent = document.getElementById('main-content');
         const productList = document.getElementById('product-list');
         const emptyMessage = document.getElementById('empty-message');
+        const adminLoginBtn = document.getElementById('admin-login-btn');
+        const passwordModal = document.getElementById('password-modal');
+        const passwordInput = document.getElementById('password-input');
+        const passwordSubmitBtn = document.getElementById('password-submit-btn');
+        const passwordCloseBtn = document.getElementById('password-close-btn');
+        const passwordError = document.getElementById('password-error');
+        const adminPanel = document.getElementById('admin-panel');
+        const addProductForm = document.getElementById('add-product-form');
+        const productImageFile = document.getElementById('product-image-file');
+        const imagePreview = document.getElementById('image-preview');
+        const fileInputLabel = document.querySelector('.file-input-label span');
+        const catalogButtons = document.querySelectorAll('#catalog-menu .catalog-btn');
+        const genderButtons = document.querySelectorAll('#gender-menu .gender-btn');
+
+        // Добавляем DOM-элементы для модальных окон
+        const detailsView = document.getElementById('details-view');
+        const detailsCloseBtn = document.getElementById('details-close-btn');
+        const buyBtn = document.getElementById('buy-btn');
+        const orderFormModal = document.getElementById('order-form-modal');
+        const orderForm = document.getElementById('order-form');
+        const orderFormCloseBtn = document.getElementById('order-form-close-btn');
+        const paymentModal = document.getElementById('payment-modal');
+        const paymentConfirmBtn = document.getElementById('payment-confirm-btn');
+        const paymentCloseBtn = document.getElementById('payment-close-btn');
+        const copyCardBtn = document.getElementById('copy-card-btn');
         const modalMessage = document.getElementById('modal-message');
         const modalText = document.getElementById('modal-text');
         const modalCloseBtn = document.getElementById('modal-close-btn');
 
-        const passwordModal = document.getElementById('password-modal');
-        const passwordInput = document.getElementById('password-input');
-        const passwordSubmitBtn = document.getElementById('password-submit-btn');
-        const passwordError = document.getElementById('password-error');
-        const passwordCloseBtn = document.getElementById('password-close-btn');
-        
-        const detailsView = document.getElementById('details-view');
-        const detailsTitle = document.getElementById('details-title');
-        const detailsImage = document.getElementById('details-image');
-        const detailsDescription = document.getElementById('details-description');
-        const detailsText = document.getElementById('details-text');
-        const detailsPrice = document.getElementById('details-price');
-        const detailsCloseBtn = document.getElementById('details-close-btn');
-        const mainContent = document.getElementById('main-content');
-        const buyBtn = document.getElementById('buy-btn');
-
-        const productImageFile = document.getElementById('product-image-file');
-        const imagePreview = document.getElementById('image-preview');
-        const fileInputLabel = document.querySelector('.file-input-label span');
-        const productDetailsInput = document.getElementById('product-details');
-
-        const genderButtons = document.querySelectorAll('.gender-btn');
-        const catalogButtons = document.querySelectorAll('.catalog-btn');
-
-        const sizeSelectionContainer = document.getElementById('size-selection-container');
-        const sizeButtonsContainer = document.getElementById('size-buttons');
-        
-        // Элементы для новых модальных окон
-        const orderFormModal = document.getElementById('order-form-modal');
-        const orderForm = document.getElementById('order-form');
-        const orderFormCloseBtn = document.getElementById('order-form-close-btn');
-        const orderNameInput = document.getElementById('order-name');
-        const orderAddressInput = document.getElementById('order-address');
-        const orderEmailInput = document.getElementById('order-email');
-        const orderPhoneInput = document.getElementById('order-phone');
-        
-        const paymentModal = document.getElementById('payment-modal');
-        const paymentAmount = document.getElementById('payment-amount');
-        const paymentSize = document.getElementById('payment-size');
-        const paymentCompletedBtn = document.getElementById('payment-completed-btn');
-        const paymentCloseBtn = document.getElementById('payment-close-btn');
-        const orderFormSizeInfo = document.getElementById('order-form-size-info');
-        const selectedSizeDisplay = document.getElementById('selected-size-display');
-        
-        let isAdmin = false;
-        let currentGender = 'all';
+        // Переменные состояния
         let currentCategory = 'all';
-        let currentProduct = null; 
-        let currentOrderData = {};
+        let currentGender = 'all';
+        let selectedProduct = null;
         let selectedSize = null;
+        let orderData = {};
 
-        // Инициализируем Telegram Web App
-        if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
-            Telegram.WebApp.ready();
-        }
+        // ----------------- Функции для работы с данными и отображением -----------------
 
-        // Показывает модальное окно с сообщением
-        function showMessageModal(message) {
-            modalText.textContent = message;
-            modalMessage.classList.remove('hidden');
-        }
-
-        // Скрывает модальное окно сообщений
-        modalCloseBtn.addEventListener('click', () => {
-            modalMessage.classList.add('hidden');
-        });
-        
-        // Скрывает полноэкранное представление
-        detailsCloseBtn.addEventListener('click', () => {
+        // Функция для скрытия всех модальных окон и возврата на главную
+        function hideAllModals() {
+            passwordModal.classList.add('hidden');
             detailsView.classList.add('hidden');
-            mainContent.classList.remove('hidden'); 
-            currentProduct = null;
-            selectedSize = null;
-        });
-
-        // Скрывает модальное окно анкеты
-        orderFormCloseBtn.addEventListener('click', () => {
             orderFormModal.classList.add('hidden');
-        });
-
-        // Скрывает модальное окно оплаты
-        paymentCloseBtn.addEventListener('click', () => {
             paymentModal.classList.add('hidden');
-        });
-
-        // Переключает режим администратора
-        function toggleAdminMode() {
-            isAdmin = !isAdmin;
-            adminLoginBtn.textContent = isAdmin ? 'Выйти' : 'Войти как админ';
-            adminPanel.classList.toggle('hidden', !isAdmin);
-            renderProducts(); 
+            modalMessage.classList.add('hidden');
         }
 
-        // Получает товары из localStorage
-        function getProducts() {
-            try {
-                const products = JSON.parse(localStorage.getItem('products')) || [];
-                return products;
-            } catch (e) {
-                console.error("Не удалось разобрать данные из localStorage:", e);
-                return [];
-            }
-        }
-
-        // Сохраняет товары в localStorage
-        function saveProducts(products) {
-            localStorage.setItem('products', JSON.stringify(products));
-        }
-
-        // Отрисовывает список товаров
-        function renderProducts() {
-            const products = getProducts();
-            productList.innerHTML = ''; 
-
-            const filteredProducts = products.filter(product => 
-                (currentGender === 'all' || product.gender === currentGender) &&
-                (currentCategory === 'all' || product.category === currentCategory)
-            );
-
-            if (filteredProducts.length === 0) {
+        // Функция для отображения каталога
+        function displayProducts(products) {
+            productList.innerHTML = '';
+            if (products.length === 0) {
                 emptyMessage.classList.remove('hidden');
             } else {
                 emptyMessage.classList.add('hidden');
-                filteredProducts.forEach(product => {
-                    const productDiv = document.createElement('div');
-                    productDiv.className = 'product-card bg-white rounded-box overflow-hidden shadow-lg flex flex-col md:flex-row transition duration-300 transform hover:scale-[1.02] hover:shadow-2xl cursor-pointer';
-                    productDiv.dataset.id = product.id; 
-
-                    productDiv.innerHTML = `
-                        <div class="product-image-container md:w-1/3 md:h-auto overflow-hidden">
-                            <img src="${product.image}" onerror="this.src='https://placehold.co/400x225/ffffff/000000?text=LINKKORN'" alt="${product.name}" class="w-full h-full object-cover">
-                        </div>
-                        <div class="flex-1 p-4 flex flex-col justify-between">
-                            <div>
-                                <h3 class="text-xl font-bold text-black mb-1">${product.name}</h3>
-                                <p class="text-gray-700 text-sm mb-2">Пол: ${product.gender === 'men' ? 'Мужской' : 'Женский'}</p>
-                                <p class="text-gray-700 text-sm mb-2">${product.description}</p>
-                                <p class="text-lg font-semibold text-black">${product.price} ₽</p>
-                            </div>
-                            <div class="flex items-center justify-end">
-                                <button data-id="${product.id}" class="delete-btn bg-white text-black font-semibold py-1 px-3 rounded-btn mt-2 transition duration-300 ${isAdmin ? '' : 'hidden'}">Удалить</button>
-                            </div>
-                        </div>
-                    `;
-                    productList.appendChild(productDiv);
-                });
-
-                document.querySelectorAll('.delete-btn').forEach(button => {
-                    button.addEventListener('click', (e) => {
-                        e.stopPropagation(); 
-                        const productId = e.target.dataset.id;
-                        deleteProduct(productId);
-                    });
-                });
-                
-                document.querySelectorAll('.product-card').forEach(card => {
-                    card.addEventListener('click', (e) => {
-                        const productId = e.currentTarget.dataset.id;
-                        const product = getProducts().find(p => p.id === productId);
-                        if (product) {
-                            showProductDetails(product);
-                        }
-                    });
+                products.forEach(product => {
+                    const productCard = createProductCard(product);
+                    productList.appendChild(productCard);
                 });
             }
         }
 
+        // Функция для фильтрации товаров
+        function filterProducts() {
+            const filtered = productsDB.filter(product => {
+                const categoryMatch = currentCategory === 'all' || product.category === currentCategory;
+                const genderMatch = currentGender === 'all' || product.gender === currentGender;
+                return categoryMatch && genderMatch;
+            });
+            displayProducts(filtered);
+        }
+
+        // Функция для смены категории
+        function changeCategory(category) {
+            currentCategory = category;
+            catalogButtons.forEach(button => {
+                button.classList.remove('active');
+                if (button.dataset.category === category) {
+                    button.classList.add('active');
+                }
+            });
+            filterProducts();
+        }
+
+        // Функция для смены пола
+        function changeGender(gender) {
+            currentGender = gender;
+            genderButtons.forEach(button => {
+                button.classList.remove('active');
+                if (button.dataset.gender === gender) {
+                    button.classList.add('active');
+                }
+            });
+            filterProducts();
+        }
+
+        // Функция для создания карточки товара
+        function createProductCard(product) {
+            const card = document.createElement('div');
+            card.className = 'product-card rounded-box p-4 flex flex-col items-center justify-between glow-shadow transition transform hover:scale-105 duration-300 cursor-pointer';
+            card.dataset.id = product.id;
+            card.innerHTML = `
+                <div class="product-image-container mb-4 rounded-md overflow-hidden border-2 border-black">
+                    <img src="${product.imageUrl}" alt="${product.name}" class="product-image">
+                </div>
+                <h3 class="product-name text-center text-lg md:text-xl font-bold mb-2">${product.name}</h3>
+                <p class="product-description text-center text-sm text-gray-700 mb-4 truncate w-full">${product.description}</p>
+                <div class="w-full flex justify-between items-center mt-auto">
+                    <span class="product-price text-xl md:text-2xl font-extrabold">${product.price} ₽</span>
+                </div>
+            `;
+            card.addEventListener('click', () => showProductDetails(product));
+            return card;
+        }
+
+        // Функция для отображения деталей товара
         function showProductDetails(product) {
-            detailsTitle.textContent = product.name;
-            detailsImage.src = product.image;
-            detailsDescription.textContent = `Пол: ${product.gender === 'men' ? 'Мужской' : 'Женский'}\n${product.description}`;
-            detailsText.textContent = product.details;
-            detailsPrice.textContent = `${product.price} ₽`;
-            
-            currentProduct = product; 
-            
-            // Отрисовываем кнопки размеров
+            selectedProduct = product;
+            document.getElementById('details-image').src = product.imageUrl;
+            document.getElementById('details-title').textContent = product.name;
+            document.getElementById('details-description').textContent = product.description;
+            document.getElementById('details-text').textContent = product.details;
+            document.getElementById('details-price').textContent = `${product.price} ₽`;
+
+            const sizeButtonsContainer = document.getElementById('size-buttons');
+            const sizeSelectionContainer = document.getElementById('size-selection-container');
             sizeButtonsContainer.innerHTML = '';
-            selectedSize = null; 
+            selectedSize = null;
+
             if (product.sizes && product.sizes.length > 0) {
                 sizeSelectionContainer.classList.remove('hidden');
                 product.sizes.forEach(size => {
-                    const button = document.createElement('button');
-                    button.textContent = size;
-                    button.className = 'size-btn py-2 px-4 rounded-btn text-sm font-semibold transition duration-300';
-                    button.dataset.size = size;
-                    button.addEventListener('click', (e) => {
-                        document.querySelectorAll('.size-btn').forEach(btn => btn.classList.remove('active'));
-                        e.target.classList.add('active');
-                        selectedSize = e.target.dataset.size;
+                    const btn = document.createElement('button');
+                    btn.className = 'size-btn py-2 px-4 rounded-btn text-sm font-semibold transition duration-300';
+                    btn.textContent = size;
+                    btn.dataset.size = size;
+                    btn.addEventListener('click', () => {
+                        document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        selectedSize = size;
                     });
-                    sizeButtonsContainer.appendChild(button);
+                    sizeButtonsContainer.appendChild(btn);
                 });
             } else {
                 sizeSelectionContainer.classList.add('hidden');
             }
 
-            mainContent.classList.add('hidden');
             detailsView.classList.remove('hidden');
         }
 
-        function addProduct(event) {
-            event.preventDefault();
+        // Функция для очистки формы добавления товара
+        function clearAddProductForm() {
+            addProductForm.reset();
+            imagePreview.src = '#';
+            imagePreview.classList.add('hidden');
+            fileInputLabel.textContent = 'Выберите файл...';
+        }
 
-            if (!productImageFile.files.length) {
-                showMessageModal('Пожалуйста, выберите файл с фото!');
-                return;
-            }
-            
-            // Получаем выбранные размеры
-            const selectedSizes = Array.from(document.querySelectorAll('input[name="product-sizes"]:checked')).map(checkbox => checkbox.value);
-            if (selectedSizes.length === 0) {
-                showMessageModal('Пожалуйста, выберите хотя бы один размер!');
-                return;
-            }
+        // Функция для сохранения товара в localStorage
+        function saveProducts() {
+            localStorage.setItem('products', JSON.stringify(productsDB));
+        }
 
+        // Функция для добавления нового товара
+        function addProduct(e) {
+            e.preventDefault();
             const gender = document.getElementById('product-gender').value;
             const category = document.getElementById('product-category').value;
             const name = document.getElementById('product-name').value;
             const description = document.getElementById('product-description').value;
-            const details = productDetailsInput.value; 
+            const details = document.getElementById('product-details').value;
             const price = document.getElementById('product-price').value;
+            const sizes = Array.from(document.querySelectorAll('input[name="product-sizes"]:checked')).map(el => el.value);
+
             const file = productImageFile.files[0];
-
-            if (!category) {
-                showMessageModal('Пожалуйста, выберите категорию для товара!');
-                return;
-            }
-
             const reader = new FileReader();
-            reader.onload = function(e) {
-                const newProduct = {
-                    id: Date.now().toString(), 
-                    gender,
-                    category,
-                    name,
-                    description,
-                    details,
-                    price: parseFloat(price),
-                    sizes: selectedSizes, // Сохраняем выбранные размеры
-                    image: e.target.result 
-                };
 
-                const products = getProducts();
-                products.push(newProduct);
-                saveProducts(products);
-                renderProducts();
-                addProductForm.reset();
-                imagePreview.classList.add('hidden');
-                fileInputLabel.textContent = 'Выберите файл...';
+            reader.onload = function(e) {
+                const imageUrl = e.target.result;
+                const newProduct = {
+                    id: Date.now(),
+                    gender: gender,
+                    category: category,
+                    name: name,
+                    description: description,
+                    details: details,
+                    price: price,
+                    sizes: sizes,
+                    imageUrl: imageUrl
+                };
+                productsDB.push(newProduct);
+                saveProducts();
+                filterProducts();
+                clearAddProductForm();
                 showMessageModal('Товар успешно добавлен!');
             };
+
             reader.readAsDataURL(file);
         }
 
-        function deleteProduct(productId) {
-            let products = getProducts();
-            products = products.filter(product => product.id !== productId);
-            saveProducts(products);
-            renderProducts();
-            showMessageModal('Товар успешно удален!');
+        // Функция для отображения модального окна с сообщением
+        function showMessageModal(message) {
+            modalText.textContent = message;
+            modalMessage.classList.remove('hidden');
         }
 
-        function changeCategory(category) {
-            currentCategory = category;
-            catalogButtons.forEach(btn => {
-                if (btn.dataset.category === category) {
-                    btn.classList.add('active');
-                } else {
-                    btn.classList.remove('active');
-                }
-            });
-            renderProducts();
-        }
+        // ----------------- Инициализация и обработка событий -----------------
 
-        function changeGender(gender) {
-            currentGender = gender;
-            genderButtons.forEach(btn => {
-                if (btn.dataset.gender === gender) {
-                    btn.classList.add('active');
-                } else {
-                    btn.classList.remove('active');
-                }
-            });
-            renderProducts();
-        }
+        // При загрузке страницы, убеждаемся, что все модальные окна скрыты
+        // Это решает проблему с открытием не той страницы
+        window.onload = function() {
+            hideAllModals();
+            filterProducts(); // Отображаем товары при загрузке
+        };
 
-        // ОБНОВЛЕННЫЙ ОБРАБОТЧИК ДЛЯ КНОПКИ "КУПИТЬ"
-        buyBtn.addEventListener('click', () => {
-            if (!currentProduct) {
-                showMessageModal('Произошла ошибка. Пожалуйста, выберите товар для покупки.');
-                return;
-            }
-            if (!selectedSize) {
-                showMessageModal('Пожалуйста, выберите размер!');
-                return;
-            }
-            // Показываем модальное окно с анкетой
-            orderFormModal.classList.remove('hidden');
-            selectedSizeDisplay.textContent = selectedSize;
-            orderFormSizeInfo.classList.remove('hidden');
-        });
-
-        // ОБРАБОТЧИК ОТПРАВКИ ФОРМЫ
-        orderForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            // Сохраняем данные из формы
-            currentOrderData = {
-                name: orderNameInput.value,
-                address: orderAddressInput.value,
-                size: selectedSize, // Добавляем выбранный размер
-                email: orderEmailInput.value,
-                phone: orderPhoneInput.value,
-                product_id: currentProduct.id,
-                product_name: currentProduct.name,
-                product_price: currentProduct.price,
-                product_image: currentProduct.image
-            };
-
-            // Скрываем анкету
-            orderFormModal.classList.add('hidden');
-            
-            // Заполняем и показываем модальное окно оплаты
-            paymentAmount.textContent = `${currentProduct.price} ₽`;
-            paymentSize.textContent = `Размер: ${currentOrderData.size}`;
-            paymentModal.classList.remove('hidden');
-        });
-        
-        // ОБРАБОТЧИК КНОПКИ "Я оплатил"
-        paymentCompletedBtn.addEventListener('click', () => {
-            // Выводим данные в консоль (имитация отправки админу)
-            console.log("Заказ успешно оплачен! Детали:");
-            console.log(currentOrderData);
-
-            // Отправляем данные в Telegram Web App
-            if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
-                const dataToSend = {
-                    action: 'order_completed',
-                    payload: currentOrderData
-                };
-                Telegram.WebApp.sendData(JSON.stringify(dataToSend));
-            } else {
-                console.warn("Telegram.WebApp is not available. Data will not be sent to the bot.");
-            }
-
-            // Скрываем окно оплаты
-            paymentModal.classList.add('hidden');
-            
-            // Показываем сообщение с благодарностью
-            showMessageModal('Спасибо за покупку! Информация о заказе отправлена администратору.');
-            
-            // Очищаем данные
-            currentProduct = null;
-            currentOrderData = {};
-            selectedSize = null;
-        });
-
-        // Обработчики событий
-        window.addEventListener('load', renderProducts);
-        
         adminLoginBtn.addEventListener('click', () => {
-            if (isAdmin) {
-                toggleAdminMode();
-            } else {
-                passwordModal.classList.remove('hidden');
-                passwordInput.value = '';
-                passwordError.classList.add('hidden');
-                passwordInput.focus();
-            }
+            passwordModal.classList.remove('hidden');
         });
 
         passwordSubmitBtn.addEventListener('click', () => {
-            if (passwordInput.value === '8920666') {
+            if (passwordInput.value === ADMIN_PASSWORD) {
                 passwordModal.classList.add('hidden');
-                toggleAdminMode();
+                adminPanel.classList.remove('hidden');
+                showMessageModal('Добро пожаловать, администратор!');
             } else {
                 passwordError.classList.remove('hidden');
             }
@@ -753,6 +611,7 @@
 
         passwordCloseBtn.addEventListener('click', () => {
             passwordModal.classList.add('hidden');
+            passwordError.classList.add('hidden');
         });
 
         passwordInput.addEventListener('keypress', (e) => {
@@ -788,6 +647,86 @@
             button.addEventListener('click', (e) => {
                 changeGender(e.target.dataset.gender);
             });
+        });
+
+        // Обработчики событий для модальных окон
+        detailsCloseBtn.addEventListener('click', () => {
+            detailsView.classList.add('hidden');
+        });
+
+        buyBtn.addEventListener('click', () => {
+            if (!selectedSize && selectedProduct.sizes.length > 0) {
+                showMessageModal('Пожалуйста, выберите размер.');
+                return;
+            }
+            detailsView.classList.add('hidden');
+            document.getElementById('selected-size-display').textContent = selectedSize || 'N/A';
+            document.getElementById('order-form-size-info').classList.remove('hidden');
+            orderFormModal.classList.remove('hidden');
+        });
+
+        orderFormCloseBtn.addEventListener('click', () => {
+            orderFormModal.classList.add('hidden');
+        });
+
+        orderForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('order-name').value;
+            const address = document.getElementById('order-address').value;
+            const email = document.getElementById('order-email').value;
+            const phone = document.getElementById('order-phone').value;
+
+            if (name && address && email && phone) {
+                orderData = {
+                    product_id: selectedProduct.id,
+                    product_name: selectedProduct.name,
+                    size: selectedSize || 'N/A',
+                    product_price: selectedProduct.price,
+                    name: name,
+                    address: address,
+                    email: email,
+                    phone: phone
+                };
+                orderFormModal.classList.add('hidden');
+                document.getElementById('payment-price').textContent = `${orderData.product_price} ₽`;
+                paymentModal.classList.remove('hidden');
+            } else {
+                document.getElementById('form-error').classList.remove('hidden');
+            }
+        });
+
+        paymentCloseBtn.addEventListener('click', () => {
+            paymentModal.classList.add('hidden');
+        });
+
+        paymentConfirmBtn.addEventListener('click', async () => {
+            const dataToSend = {
+                action: 'order_completed',
+                payload: orderData
+            };
+            try {
+                // Отправляем данные в бота
+                Telegram.WebApp.sendData(JSON.stringify(dataToSend));
+                showMessageModal('Ваш заказ отправлен! Вскоре с вами свяжется администратор.');
+                paymentModal.classList.add('hidden');
+            } catch (error) {
+                console.error("Failed to send data to Telegram bot:", error);
+                document.getElementById('payment-error').classList.remove('hidden');
+            }
+        });
+
+        copyCardBtn.addEventListener('click', () => {
+            const cardNumber = document.getElementById('card-number').textContent;
+            navigator.clipboard.writeText(cardNumber).then(() => {
+                showMessageModal('Номер карты скопирован!');
+            }).catch(err => {
+                console.error('Не удалось скопировать номер карты:', err);
+                showMessageModal('Не удалось скопировать. Пожалуйста, скопируйте вручную.');
+            });
+        });
+
+        modalCloseBtn.addEventListener('click', () => {
+            modalMessage.classList.add('hidden');
         });
     </script>
 </body>
